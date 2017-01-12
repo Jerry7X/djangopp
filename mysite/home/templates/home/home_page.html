@@ -11,7 +11,7 @@
         <ul class="services">
         {% for ch in post.get_children %}
             <li>
-                <h2><a href="{% pageurl ch %}">{{ ch.specific.intro }}</a></h2>
+                <h2><a href="{% pageurl ch %}">{{ ch.specific.title }}</a></h2>
             </li>
         {% endfor %} 
         </ul>

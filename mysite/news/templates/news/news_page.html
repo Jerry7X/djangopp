@@ -1,4 +1,4 @@
-{% extends "base3.html" %}
+{% extends "base_news.html" %}
 
 {% load wagtailcore_tags %}
 
@@ -15,9 +15,10 @@
 
     {{ page.body|richtext }}
 
-    <h2> 评论：</h2>
-    {{ page.comment|richtext }}
-
     <!-- <p><a href="{{ page.get_parent.url }}">Return to news</a></p> -->
 
 {% endblock %}
+
+{% block comment %}
+    {{ page.comment|richtext }}
+{% endblock%}
