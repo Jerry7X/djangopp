@@ -1,0 +1,20 @@
+{% extends "base3.html" %}
+
+{% load wagtailcore_tags %}
+
+{% block body_class %}template-newsdirpage{% endblock %}
+
+{#% block title %#}
+    {#{ page.title }#}
+{#% endblock %#}
+
+{% block content %}
+    {% for post in page.get_children %}
+        <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+        <!--{{ post.specific.intro }}-->
+        <!--{{ post.specific.body|richtext }}-->
+    {% endfor %}
+    
+    <!--<p><a href="{{ page.get_parent.url }}">Return to home</a></p> -->
+
+{% endblock %}
