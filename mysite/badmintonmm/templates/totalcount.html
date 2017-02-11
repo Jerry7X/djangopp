@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p>请输入两个数字</p>
+ 
+ 
+<form action="/add/" method="get">
+    total: <input type="text" name="a"> <br>
+    left: <input type="text" name="b"> <br>
+     
+    <input type="submit" value="提交">
+</form>
+
+<form action="/badmintonmm/deposit/" method="get">
+    姓名: <input type="text" name="name"> <br>
+    充值金额: <input type="text" name="amount"> <br>
+
+    <input type="submit" value="提交">
+</form>
+<table>
+<tr>
+<th>姓名</th>
+<th>金额</th>
+<th>时间</th>
+</tr>
+{% for res in results %}
+<tr>
+<th>{{res.name}}</th>
+<th>{{res.amount}}</th>
+<th>{{res.time}}</th>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
