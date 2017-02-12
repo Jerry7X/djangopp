@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'home',
     'blog',
     'news',
+    'badmintonmm',
 ]
 
 MIDDLEWARE = [
