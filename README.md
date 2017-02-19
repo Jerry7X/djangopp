@@ -5,4 +5,4 @@ my django project
 目前集成了wagtail主要用来写博客分享，以及收集一些资讯。后续会添加一些有趣的app进去
 
 
-wagtail超级内容密码为An******
+wagtail超级用户密码为An******
