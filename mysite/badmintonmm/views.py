@@ -12,11 +12,11 @@ def index(request):
     return render(request, 'play.html')
     
 def home(request):
-    rets = list(Deposit.objects.all())
+    rets = list(Deposit.objects.all().order_by('-time'))
     membercounts = list(MemberCount.objects.all())
     total = get_total()
     balls = list(Ball.objects.all())
-    plays = list(PlayOne.objects.all())
+    plays = list(PlayOne.objects.all().order_by('-time'))
     #results = []
     #for ret in rets:
     #    results.append({'name': ret[0],'amount':ret[1],'time':ret[2]})

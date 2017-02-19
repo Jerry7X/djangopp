@@ -13,7 +13,7 @@ class TotalCount(models.Model):
 class Deposit(models.Model):
     name = models.CharField(max_length=64)
     amount = models.FloatField(default=0)
-    time = models.DateField(default=datetime.date.today())
+    time = models.DateField()
 
 class MemberCount(models.Model):
     name = models.CharField(max_length=64)
