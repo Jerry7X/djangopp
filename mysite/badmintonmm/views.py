@@ -80,7 +80,7 @@ def play(request):
     try :
         ball = Ball.objects.get(name=po.balltype)
         totalfee = po.fee + ball.price * po.ballused
-        po.aaprice = totalfee / len(players)
+        po.aaprice = round(totalfee / len(players), 3)
         # reduce left ball
         ball.l_count = ball.l_count - po.ballused
         ball.save()
