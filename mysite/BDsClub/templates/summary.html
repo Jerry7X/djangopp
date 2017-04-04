@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+
+table.gridtable1 {
+        font-family: verdana,arial,sans-serif;
+        font-size:11px;
+        color:#333333;
+        border-width: 1px;
+        border-color: #666666;
+        border-collapse: collapse;
+}
+table.gridtable1 tr {
+        display: inline-block;
+}
+table.gridtable1 th {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #dedede;
+        display: block;
+}
+table.gridtable1 td {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #ffffff;
+        display: block;
+}
+
+.lay1 {
+     width: 250px;
+     height: 800px;
+     float: left;
+}
+.lay11 {
+     width: 300px;
+     height: 800px;
+     float: left;
+}
+.lay2 {
+     width: 800px;
+     float: left;
+}
+</style>
+<br>
+</div>
+<div>
+<table class="gridtable1">
+<tr>
+<th>姓名</th>
+<th>余额</th>
+</tr>
+{% for member in members %}
+<tr>
+<td>{{member.name}}</td>
+<td>{{member.amount}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+<hr/>
+
+<div class="lay1">
+<table class="gridtable"> 
+<tr>
+<th>名称</th>
+<th>单价</th>
+</tr>
+{% for ball  in balls %}
+<tr>
+<td>{{ball.name}}</td>
+<td>{{ball.price}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+<div class="lay11">
+<table class="gridtable">
+<tr>
+<th>姓名</th>
+<th>金额</th>
+<th>时间</th>
+</tr>
+{% for res in results %}
+<tr>
+<td>{{res.name}}</td>
+<td>{{res.amount}}</td>
+<td>{{res.time}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+<div class="lay2">
+<table class="gridtable">
+<tr>
+<th>时间</th>
+<th>参与人</th>
+<th>场地</th>
+<th>时长</th>
+<th>场地费</th>
+<th>备注</th>
+<th>AA单价</th>
+</tr>
+{% for play in plays %}
+<tr>
+<td>{{play.time}}</td>
+<td>{{play.players}}</td>
+<td>{{play.place}}</td>
+<td>{{play.duration}}</td>
+<td>{{play.fee}}</td>
+<td>{{play.fee_comment}}</td>
+<td>{{play.aaprice}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</body>
+</html>
