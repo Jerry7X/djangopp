@@ -50,7 +50,7 @@ def addball(request):
     return home(request)
 
 def get_current_play():
-    plays = list(Play.objects.all().order_by('-time'))
+    plays = list(Play.objects.all().order_by('-id'))
     if not plays:
         py = Play()
         py.id = 0
@@ -91,8 +91,8 @@ def play_running(request):
     if py.state != 1 :
         return render(request, 'error.html',{'error': "play not start!!!"})
 #update place and time
-    pn.place = request.GET['place']
-    pn.duration = request.GET['duration']
+    py.place = request.GET['place']
+    py.duration = request.GET['duration']
     py.state = 2
     py.save()
     return home(request)
@@ -100,7 +100,7 @@ def play_running(request):
 def apply(request):
     py = get_current_play()
     if py.state != 1 :
-        return render(request, 'error.html',{'error': "can not join!!!"})
+        return render(request, 'error.html',{'error': "it is going on,can not join now!!!"})
     # check whether member apply or not
     
     num, affected = Apply.objects.filter(name = request.GET['name'], pid = py.id).delete()
@@ -116,7 +116,7 @@ def apply(request):
     
 def play_cancel(request):
     py = get_current_play()
-    if py.state == 2 :
+    if py.state != 1 :
         return render(request, 'error.html',{'error': "can not cancel!!!"})
 
     if py.state == 1 :
