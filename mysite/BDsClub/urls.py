@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^addball/$', addball),
     url(r'^playall/$', playall),
     url(r'^apply/$', apply),
+    url(r'^get_yue', wx_my_amount),
 ]
 

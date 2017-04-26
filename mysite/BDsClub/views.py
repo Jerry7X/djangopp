@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from BDsClub.models import *
+from django.core import serializers
+import json
 import datetime
  
 def bdsclub(request):
@@ -41,6 +43,14 @@ def deposit_fun(name, amount):
 def deposit(request):
     deposit_fun(request.GET['name'], float(request.GET['amount']))
     return home(request)
+
+def wx_my_amount(request):
+    mname = request.GET['name']
+    mc,created = Member.objects.get_or_create(name=mname)
+    res = {"amount": mc.amount }
+    #json_data = serializers.serialize("json", mc)
+    return HttpResponse(json.dumps(res))
+        
 
 def addball(request):
     bl = Ball()
