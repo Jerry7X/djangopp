@@ -20,6 +20,51 @@ def home(request):
     return render(request, 'summary.html',{'results': rets,'members': member,
                      'balls':balls,'plays':plays})
 
+def wx_get_fee_history(request):
+    mname = request.GET['name']
+    feehis = []
+    rets = list(Deposit.objects.filter(name = mname).order_by('-time'))
+    dt = 0.0
+    ct = 0.0
+    for ret in rets:
+        if ret.amount > 0:
+            dt = dt + ret.amount
+        else:
+            ct = ct + ret.amount
+        feehis.append({'time': str(ret.time), 'amount': ret.amount })
+    res = { 'dt': dt, 'ct': ct, 'feelist': feehis }
+    return HttpResponse(json.dumps(res))
+
+def wx_get_play_history(request):
+    mname = request.GET['name']
+    apply_list = []
+    aps = list(Apply.objects.filter(name = mname).order_by('-pid'))
+    for ap in aps:
+        players = get_current_players(ap.pid)
+        play = Play.objects.get(id = ap.pid)
+        apply_list.append({'id': ap.pid, 'time': play.duration, 'players': players})
+    return HttpResponse(json.dumps(apply_list))
+
+def wx_get_current_players(ppid):
+    players = Apply.objects.filter(pid = ppid)
+    pls = ''
+    lines = 0
+    for player in players:
+         if (len(pls) - lines * 20) > 20:
+             lines = lines + 1
+             pls = pls + '\n'
+         pls = pls + player.name + '  '
+    return pls
+
+def wx_get_curplay(request):
+    play = get_current_play()
+    players = wx_get_current_players(play.id)
+    no_apply = True
+    if play.state == 1:
+        no_apply = False
+    res = {"id": play.id, "place": play.place, "duration": play.duration, "players": players, "state": no_apply }
+    return HttpResponse(json.dumps(res))
+
 def check_member(mname, amount):
     mc,created = Member.objects.get_or_create(name=mname)
     if not created:
@@ -101,6 +146,10 @@ def play_running(request):
     if py.state != 1 :
         return render(request, 'error.html',{'error': "play not start!!!"})
 #update place and time
+    players = Apply.objects.filter(pid = py.id)
+    if (len(players) == 0) :
+        return render(request, 'error.html',{'error': "no players, you should run the play!!!"})
+
     py.place = request.GET['place']
     py.duration = request.GET['duration']
     py.state = 2
@@ -123,15 +172,35 @@ def apply(request):
         check_member(ap.name, 0)        
         ap.save()
     return home(request)
+
+def wx_apply(request):
+    py = get_current_play()
+    if py.state != 1 :
+        res = {"result": -1}
+        return HttpResponse(json.dumps(res))
+    num, affected = Apply.objects.filter(name = request.GET['name'], pid = py.id).delete()
+    print(num)
+    if num == 0 :
+        ap = Apply()
+        ap.name = request.GET['name']
+        ap.pid = py.id
+        # here do
+        check_member(ap.name, 0)
+        ap.save()
+        res = {"result": 0}
+    else :
+        res = {"result": 1}
+
+    return HttpResponse(json.dumps(res))
     
 def play_cancel(request):
     py = get_current_play()
-    if py.state != 1 :
-        return render(request, 'error.html',{'error': "can not cancel!!!"})
+    #if py.state != 1 :
+    #    return render(request, 'error.html',{'error': "can not cancel!!!"})
 
-    if py.state == 1 :
-        py.state = 4
-        py.save()
+    #if py.state == 1 :
+    py.state = 4
+    py.save()
 
     return home(request)
 
@@ -145,7 +214,8 @@ def play_end(request):
 
     #check player
     players = Apply.objects.filter(pid = py.id)
-    
+    if (len(players) == 0) :
+        return render(request, 'error.html',{'error': "no players, you should cancel the play!!!"})
     py.aaprice = round(py.fee / len(players), 3)
     # end
     py.state = 3
