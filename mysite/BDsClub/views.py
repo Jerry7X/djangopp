@@ -48,12 +48,15 @@ def wx_get_play_history(request):
 def wx_get_current_players(ppid):
     players = Apply.objects.filter(pid = ppid)
     pls = ''
-    lines = 0
+    #lines = 0
+    num = 1
     for player in players:
-         if (len(pls) - lines * 20) > 20:
-             lines = lines + 1
-             pls = pls + '\n'
-         pls = pls + player.name + '  '
+         #if (len(pls) - lines * 20) > 20:
+         pls = pls + str(num) + ')'+ player.name + '   '
+         #if num % 3 == 0 :
+         #lines = lines + 1
+         pls = pls + '\n'
+         num = num + 1
     return pls
 
 def wx_get_curplay(request):
