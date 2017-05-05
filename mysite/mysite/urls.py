@@ -28,7 +28,7 @@ from BDsClub import urls as BDsClub_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', include(wagtail_urls)),
+    #url(r'^$', include(wagtail_urls)),
     url(r'^cms/', include(wagtailadmin_urls)),
     url(r'^documents/', include(wagtaildocs_urls)),
     url(r'^pages/', include(wagtail_urls)),
