@@ -81,7 +81,7 @@ def wx_get_curplay(request):
     no_apply = True
     if play.state == 1:
         no_apply = False
-    res = {"id": play.id, "place": play.place, "duration": play.duration, "players": players, "state": no_apply }
+    res = {"id": play.id, "place": play.place, "duration": play.play_time + '  '+ play.duration + '\n', "players": players, "state": no_apply }
     return HttpResponse(json.dumps(res))
 
 def check_member(mname, amount):
