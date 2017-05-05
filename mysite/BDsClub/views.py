@@ -13,19 +13,24 @@ def bdsclub(request):
 def home(request):
     rets = list(Deposit.objects.all().order_by('-time'))
     member = list(Member.objects.all())
+    als = list(Alias.objects.all())
     balls = list(Ball.objects.all())
     plays = list(Play.objects.all().order_by('-time'))
     for play in plays:
         play.players = get_current_players(play.id)
     return render(request, 'summary.html',{'results': rets,'members': member,
-                     'balls':balls,'plays':plays})
+                     'als':als,'balls':balls,'plays':plays})
 
 def wx_get_fee_history(request):
-    mname = request.GET['name']
     feehis = []
-    rets = list(Deposit.objects.filter(name = mname).order_by('-time'))
     dt = 0.0
     ct = 0.0
+    mname = get_realname(request.GET['name'])
+    if mname is None:
+        res = { 'dt': dt, 'ct': ct, 'feelist': feehis }
+        return HttpResponse(json.dumps(res))
+
+    rets = list(Deposit.objects.filter(name = mname).order_by('-time'))
     for ret in rets:
         if ret.amount > 0:
             dt = dt + ret.amount
@@ -35,9 +40,20 @@ def wx_get_fee_history(request):
     res = { 'dt': dt, 'ct': ct, 'feelist': feehis }
     return HttpResponse(json.dumps(res))
 
+def get_realname(name):
+    try:
+       al = Alias.objects.get(wx_name = name)
+       rname = al.real_name
+    except Alias.DoesNotExist:
+       rname = None
+    return rname
+
 def wx_get_play_history(request):
-    mname = request.GET['name']
+    mname = get_realname(request.GET['name'])
     apply_list = []
+    if mname is None :
+        return HttpResponse(json.dumps(apply_list))
+
     aps = list(Apply.objects.filter(name = mname).order_by('-pid'))
     for ap in aps:
         players = get_current_players(ap.pid)
@@ -89,11 +105,26 @@ def deposit_fun(name, amount):
 
 
 def deposit(request):
+    try:
+       al = Alias.objects.get(real_name = request.GET['name'])
+    except Alias.DoesNotExist:
+       return render(request, 'error.html',{'error': "do not deposit for no register user!!!"})
     deposit_fun(request.GET['name'], float(request.GET['amount']))
     return home(request)
 
+def alias(request):
+    al = Alias()
+    al.real_name = request.GET['name']
+    al.wx_name = request.GET['wxname']
+    al.save()
+    return home(request)
+
 def wx_my_amount(request):
-    mname = request.GET['name']
+    mname = get_realname(request.GET['name'])
+    if mname is None :
+       res = {"amount": 0.0 }
+       return HttpResponse(json.dumps(res))
+
     mc,created = Member.objects.get_or_create(name=mname)
     res = {"amount": mc.amount }
     #json_data = serializers.serialize("json", mc)
@@ -181,11 +212,16 @@ def wx_apply(request):
     if py.state != 1 :
         res = {"result": -1}
         return HttpResponse(json.dumps(res))
-    num, affected = Apply.objects.filter(name = request.GET['name'], pid = py.id).delete()
+    rname = get_realname(request.GET['name'])
+    if rname is None:
+        res = {"result": -2}
+        return HttpResponse(json.dumps(res))
+
+    num, affected = Apply.objects.filter(name = rname, pid = py.id).delete()
     print(num)
     if num == 0 :
         ap = Apply()
-        ap.name = request.GET['name']
+        ap.name = rname
         ap.pid = py.id
         # here do
         check_member(ap.name, 0)

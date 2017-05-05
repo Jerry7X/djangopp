@@ -86,6 +86,23 @@ table.gridtable1 td {
 </div>
 <hr/>
 
+</div>
+<div>
+<table class="gridtable1">
+<tr>
+<th>真名</th>
+<th>昵称</th>
+</tr>
+{% for al in als %}
+<tr>
+<td>{{al.real_name}}</td>
+<td>{{al.wx_name}}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+<hr/>
+
 <div class="lay1">
 <table class="gridtable"> 
 <tr>

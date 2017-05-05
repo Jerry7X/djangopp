@@ -17,6 +17,10 @@ class Member(models.Model):
     name = models.CharField(max_length=64)
     amount = models.FloatField(default=0)
 
+class Alias(models.Model):
+    real_name = models.CharField(max_length=64)
+    wx_name = models.CharField(max_length=64)
+
 class Play(models.Model):
     id = models.IntegerField(primary_key=True)
     time = models.DateField()

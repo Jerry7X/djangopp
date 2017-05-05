@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^wx_apply', wx_apply),
     url(r'^wx_get_fee_history', wx_get_fee_history),
     url(r'^wx_get_play_history', wx_get_play_history),
+    url(r'^alias/$', alias),
 ]
 
