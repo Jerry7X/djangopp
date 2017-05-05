@@ -126,7 +126,7 @@ def wx_my_amount(request):
        return HttpResponse(json.dumps(res))
 
     mc,created = Member.objects.get_or_create(name=mname)
-    res = {"amount": mc.amount }
+    res = {"amount": round(mc.amount) }
     #json_data = serializers.serialize("json", mc)
     return HttpResponse(json.dumps(res))
         
