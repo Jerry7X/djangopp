@@ -64,7 +64,9 @@ def wx_get_play_history(request):
     for ap in aps:
         players = get_current_players(ap.pid)
         play = Play.objects.get(id = ap.pid)
-        apply_list.append({'id': ap.pid, 'time': play.play_time, 'players': players})
+        # only display running or end play
+        if play.state == 2 or play.state == 3 :
+            apply_list.append({'id': ap.pid, 'time': play.play_time, 'players': players})
     return HttpResponse(json.dumps(apply_list))
 
 def wx_get_current_players(ppid):
@@ -87,6 +89,9 @@ def wx_get_curplay(request):
     no_apply = True
     if play.state == 1:
         no_apply = False
+    if play.state == 4:
+        #cancel, we should them know
+        players = ' '
     res = {"id": play.id, "place": play.place, "duration": play.duration + '\n', "players": players, "state": no_apply }
     return HttpResponse(json.dumps(res))
 
@@ -175,15 +180,15 @@ def play_start(request):
     pn.id = py.id + 1
     pn.time = datetime.date.today()
     pn.play_time = request.GET['play_time']
-    players_str = request.GET['players']
-    players = players_str.split(';')
-    for player in players :
-        ap = Apply()
-        ap.name = player
-        ap.pid = pn.id
-        # here check
-        check_member(ap.name, 0)
-        ap.save()
+    # comment,only for import history
+    #players_str = request.GET['players']
+    #players = players_str.split(';')
+    #for player in players :
+        #ap = Apply()
+        #ap.name = player
+        #ap.pid = pn.id
+        #check_member(ap.name, 0)
+        #ap.save()
     pn.place = request.GET['place']
     pn.duration = request.GET['duration']
     pn.fee = 0
