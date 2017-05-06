@@ -44,7 +44,13 @@ def get_realname(name):
     try:
        al = Alias.objects.get(wx_name = name)
        rname = al.real_name
+       if rname == 'None' :
+           rname = None
     except Alias.DoesNotExist:
+       al = Alias()
+       al.real_name = 'None'
+       al.wx_name = name
+       al.save()
        rname = None
     return rname
 
@@ -58,7 +64,7 @@ def wx_get_play_history(request):
     for ap in aps:
         players = get_current_players(ap.pid)
         play = Play.objects.get(id = ap.pid)
-        apply_list.append({'id': ap.pid, 'time': play.duration, 'players': players})
+        apply_list.append({'id': ap.pid, 'time': play.play_time, 'players': players})
     return HttpResponse(json.dumps(apply_list))
 
 def wx_get_current_players(ppid):
@@ -81,7 +87,7 @@ def wx_get_curplay(request):
     no_apply = True
     if play.state == 1:
         no_apply = False
-    res = {"id": play.id, "place": play.place, "duration": play.play_time + '  '+ play.duration + '\n', "players": players, "state": no_apply }
+    res = {"id": play.id, "place": play.place, "duration": play.duration + '\n', "players": players, "state": no_apply }
     return HttpResponse(json.dumps(res))
 
 def check_member(mname, amount):
@@ -114,6 +120,7 @@ def deposit(request):
 
 def alias(request):
     al = Alias()
+    al,created = Alias.objects.get_or_create(wx_name = request.GET['wxname'])
     al.real_name = request.GET['name']
     al.wx_name = request.GET['wxname']
     al.save()
@@ -122,6 +129,7 @@ def alias(request):
 def wx_my_amount(request):
     mname = get_realname(request.GET['name'])
     if mname is None :
+       #remember user wx name
        res = {"amount": 0.0 }
        return HttpResponse(json.dumps(res))
 
