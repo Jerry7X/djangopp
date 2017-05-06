@@ -74,7 +74,7 @@ def wx_get_current_players(ppid):
     num = 1
     for player in players:
          #if (len(pls) - lines * 20) > 20:
-         pls = pls + str(num) + ')'+ player.name + '   '
+         pls = pls + str(num) + ') '+ player.name + '   '
          #if num % 3 == 0 :
          #lines = lines + 1
          pls = pls + '\n'
@@ -175,6 +175,15 @@ def play_start(request):
     pn.id = py.id + 1
     pn.time = datetime.date.today()
     pn.play_time = request.GET['play_time']
+    players_str = request.GET['players']
+    players = players_str.split(';')
+    for player in players :
+        ap = Apply()
+        ap.name = player
+        ap.pid = pn.id
+        # here check
+        check_member(ap.name, 0)
+        ap.save()
     pn.place = request.GET['place']
     pn.duration = request.GET['duration']
     pn.fee = 0
