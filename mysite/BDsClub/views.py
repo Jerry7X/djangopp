@@ -272,19 +272,26 @@ def play_end(request):
 
     py.fee = float(request.GET['fee'])
     py.fee_comment = request.GET['comment']
-
+    pt_items = py.fee_comment.split('|')
     #check player
     players = Apply.objects.filter(pid = py.id)
     if (len(players) == 0) :
         return render(request, 'error.html',{'error': "no players, you should cancel the play!!!"})
-    py.aaprice = round(py.fee / len(players), 3)
+    if len(pt_items) != len(players) :
+        return render(request, 'error.html',{'error': "PT count is not equal with players count!!!"})
+    
+    pt_total = 0
+    for it in pt_items:
+        pt_total = pt_total + int(it)
+
+    py.aaprice = round(py.fee / pt_total, 3)
     # end
     py.state = 3
     py.save()
     
     # reduce member left amount
-    for player in players:
-        deposit_fun(player.name, -py.aaprice)
+    for i in range(len(players)):
+        deposit_fun(players[i].name, -py.aaprice * int(pt_items[i]))
 
     return home(request)
 
