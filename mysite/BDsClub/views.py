@@ -270,6 +270,7 @@ def play_end(request):
     if py.state != 2 :
         return render(request, 'error.html',{'error': "play not running!!!"})
 
+    py.play_time = request.GET['play_time']
     py.fee = float(request.GET['fee'])
     py.fee_comment = request.GET['comment']
     pt_items = py.fee_comment.split('|')
